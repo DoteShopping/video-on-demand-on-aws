@@ -2,10 +2,10 @@ Description: '(SO0021) - Video On Demand workflow with AWS Step Functions, Media
 
 Parameters:
 
-  AdminEmail:
-    Description: Email address for SNS notifications.
+  CallbackEndpoint:
+    Description: Callback endpoint used to tell API that conversion has completed.
     Type: String
-    AllowedPattern: "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"
+    AllowedPattern: "^(https:\/\/www\.|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$"
 
   WorkflowTrigger:
     Description: Select how the workflow will be triggered; source video upload to S3 or source metadata file upload.
@@ -39,19 +39,25 @@ Parameters:
       - Yes
       - No
 
+  SourceBucket:
+    Description: Bucket for uploaded source video files
+    Type: String
+    AllowedPattern: ".+"
+
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
         -
           Parameters:
-              - AdminEmail
+              - CallbackEndpoint
               - WorkflowTrigger
               - Glacier
               - FrameCapture
               - QVBR
+              - SourceBucket
     ParameterLabels:
-      AdminEmail:
-        default: Administrator email address
+      CallbackEndpoint:
+        default: Callback endpoint used to tell API that conversion has completed.
       Glacier:
         default: Archive source content
       WorkflowTrigger:
@@ -60,6 +66,8 @@ Metadata:
         default: Enable Frame Capture
       QVBR:
         default: Enable QVBR
+      SourceBucket:
+        default: Bucket for uploaded source video files
 
 Mappings:
   SourceCode:
@@ -69,7 +77,7 @@ Mappings:
 
   AnonymousData:
     SendAnonymousData:
-      Data: Yes
+      Data: No
 
 Conditions:
   Metrics: !Equals [ !FindInMap [AnonymousData,SendAnonymousData,Data], Yes ]
@@ -447,8 +455,8 @@ Resources:
       DisplayName: !Sub ${AWS::StackName}-Notifications
       Subscription:
         -
-          Endpoint: !Ref AdminEmail
-          Protocol: email
+          Endpoint: !Ref CallbackEndpoint
+          Protocol: https
 
   DestinationOriginAccessIdentity:
     Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
