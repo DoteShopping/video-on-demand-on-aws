@@ -5,7 +5,7 @@ Parameters:
   CallbackEndpoint:
     Description: Callback endpoint used to tell API that conversion has completed.
     Type: String
-    AllowedPattern: "^(https:\/\/www\.|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$"
+    AllowedPattern: ^(https:\/\/www\.|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$
 
   WorkflowTrigger:
     Description: Select how the workflow will be triggered; source video upload to S3 or source metadata file upload.
@@ -39,11 +39,6 @@ Parameters:
       - Yes
       - No
 
-  SourceBucket:
-    Description: Bucket for uploaded source video files
-    Type: String
-    AllowedPattern: ".+"
-
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
@@ -54,7 +49,6 @@ Metadata:
               - Glacier
               - FrameCapture
               - QVBR
-              - SourceBucket
     ParameterLabels:
       CallbackEndpoint:
         default: Callback endpoint used to tell API that conversion has completed.
@@ -66,8 +60,6 @@ Metadata:
         default: Enable Frame Capture
       QVBR:
         default: Enable QVBR
-      SourceBucket:
-        default: Bucket for uploaded source video files
 
 Mappings:
   SourceCode:
