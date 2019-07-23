@@ -31,7 +31,7 @@ exports.handler = async (event) => {
 
     // Baseline for the job parameters
     let job = {
-      "JobTemplate": event.jobTemplate,
+      "JobTemplate": "dev-vod-3-custom-job-template",
       "Role": process.env.MediaConvertRole,
       "UserMetadata": {
         "guid": event.guid,
@@ -52,7 +52,8 @@ exports.handler = async (event) => {
             }
           },
           "VideoSelector": {
-            "ColorSpace": "FOLLOW"
+            "ColorSpace": "FOLLOW",
+            "Rotate": "AUTO"
           },
           "FilterEnable": "AUTO",
           "PsiControl": "USE_PSI",
@@ -168,7 +169,7 @@ exports.handler = async (event) => {
     };
 
     let params = {
-      Name: event.jobTemplate
+      Name: "dev-vod-3-custom-job-template"
     };
     let tmpl = await mediaconvert.getJobTemplate(params).promise();
 
